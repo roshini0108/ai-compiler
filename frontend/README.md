@@ -22,8 +22,12 @@ npm run dev
 Start the backend from the project root in another terminal:
 
 ```bash
-uvicorn compiler_api:app --reload --port 8000
+python run_compiler_api.py
 ```
+
+Do not run `uvicorn compiler_api:app --reload --port 8000` from the project root
+while compiling. The compiler writes generated runtime files into `output/`, and
+Uvicorn's default reload watcher can restart the API server during the stream.
 
 Open `http://localhost:5173`.
 

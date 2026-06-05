@@ -1,7 +1,11 @@
 """
 compiler_api.py
 Place this in your ai-compiler/ root folder (same level as compiler/).
-Run with: uvicorn compiler_api:app --reload --port 8000
+Run with: python run_compiler_api.py
+
+Avoid running the raw uvicorn --reload command from the repo root while
+compiling. Runtime generation writes to output/, and watching that folder can
+reload the API server during the streaming response.
 """
 import json
 import sys

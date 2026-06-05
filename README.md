@@ -1,179 +1,218 @@
 # AI Application Compiler
 
-> Natural Language → Intermediate Representation → Validated Schemas → Executable Application
+Natural language product idea to validated application blueprint to generated FastAPI runtime.
 
-A compiler-style LLM pipeline that transforms a plain English product description into a fully validated, running FastAPI application with PostgreSQL schema and RBAC policies.
+This project is a compiler-style LLM pipeline. It takes a plain English product description, extracts intent, builds a domain model, generates database/API/RBAC layers, validates cross-layer consistency, repairs issues when needed, and emits a runnable FastAPI application in `output/`.
 
----
+## Current Stack
 
-## Demo
+- Python
+- FastAPI
+- Pydantic
+- Local LLM via Ollama, currently `qwen2.5:3b`
+- React, Vite, TypeScript, Tailwind CSS frontend
+- Modular compiler stages
 
-```bash
-python -m compiler.orchestrator "Build a CRM with login, contacts, dashboard, role-based access, and premium plan with payments. Admins can see analytics."
+## Pipeline
+
+```text
+Prompt
+  -> Stage 1: Intent Extraction
+  -> Stage 2: Domain / IR Modeling
+  -> Stage 3: Database Schema
+  -> Stage 4: API Schema
+  -> Stage 5: Auth and RBAC
+  -> Stage 6: Cross-Layer Validation
+  -> Stage 7: Repair Engine, only when validation finds errors
+  -> Stage 8: Runtime Generation
 ```
-
-Output:
-```
-============================================================
-  AI APPLICATION COMPILER
-============================================================
-
-Stage 1/7 ── Intent Extraction...
-  ✓ Entities: ['User', 'Contact', 'Plan', 'Payment']
-  ✓ Roles:    ['admin', 'manager', 'viewer']
-  ✓ Features: ['login', 'contacts', 'dashboard', 'payments', 'analytics']
-
-Stage 2/7 ── Building Intermediate Representation...
-  ✓ Entities: ['user', 'contact', 'plan', 'payment']
-  ✓ Roles:    ['admin', 'manager', 'viewer']
-
-Stage 4/7 ── Generating Database Schema...
-  ✓ Tables: ['users', 'contacts', 'plans', 'payments']
-
-Stage 5/7 ── Generating API Schema...
-  ✓ Endpoints: 20 generated
-
-Stage 7/7 ── Generating Auth & RBAC...
-  ✓ Policies: 60 generated
-
-Stage 8 ── Cross-Layer Validation...
-  ✓ All validation checks passed
-
-Stage 10 ── Generating Executable Application...
-  ✓ Generated FastAPI app in /output/
-
-============================================================
-  ✓ COMPILATION COMPLETE in 18.3s
-  ✓ Server ready: cd output && uvicorn main:app --reload
-  ✓ Docs at:      http://localhost:8000/docs
-============================================================
-```
-
----
-
-## Architecture
-
-```
-NL Prompt
-    ↓
-Stage 1: Intent Extraction      → IntentModel (entities, roles, features)
-    ↓
-Stage 2: Domain Understanding   → IntermediateRepresentation (IR)
-    ↓
-Stage 4: DB Schema Generation   → tables, columns, FKs, indexes
-    ↓
-Stage 5: API Schema Generation  → endpoints, request/response schemas
-    ↓
-Stage 7: Auth & RBAC Generation → policies, route guards
-    ↓
-Stage 8: Cross-Layer Validation → dependency graph, consistency checks
-    ↓
-Stage 9: Repair Engine          → surgical partial regeneration
-    ↓
-Stage 10: Runtime Generation    → FastAPI server + SQLAlchemy models
-```
-
----
-
-## Setup
-
-```bash
-# 1. Clone and enter
-git clone <repo> && cd ai-compiler
-
-# 2. Virtual environment
-python -m venv venv && source venv/bin/activate
-
-# 3. Install dependencies
-pip install -r requirements.txt
-
-# 4. Configure environment
-cp .env.example .env
-# Edit .env and add your ANTHROPIC_API_KEY
-
-# 5. Start PostgreSQL (optional - required for full runtime)
-docker run -d --name aidb -e POSTGRES_PASSWORD=password -p 5432:5432 postgres:15
-```
-
----
-
-## Usage
-
-### Compile a single prompt
-```bash
-python -m compiler.orchestrator "Your product description here"
-```
-
-### Run the generated server
-```bash
-cd output
-pip install -r requirements.txt
-uvicorn main:app --reload
-# Visit http://localhost:8000/docs
-```
-
-### Run evaluation suite
-```bash
-python -m evaluation.runner
-```
-
----
 
 ## Project Structure
 
-```
+```text
 ai-compiler/
-├── compiler/
-│   ├── ir/models.py          # Pydantic IR — single source of truth
-│   └── stages/
-│       ├── stage1_intent.py  # NL → structured intent
-│       ├── stage2_domain.py  # Intent → full IR
-│       ├── stage4_db.py      # IR → DB schema
-│       ├── stage5_api.py     # IR + DB → API schema
-│       └── stage7_auth.py    # IR + API → RBAC policies
-├── validators/
-│   └── consistency.py        # 4-layer cross-layer validator
-├── repair_engine/
-│   └── regenerator.py        # Surgical partial regeneration
-├── runtime/
-│   └── fastapi_gen/
-│       └── generator.py      # Config → FastAPI server code
-├── evaluation/
-│   └── runner.py             # 10-prompt evaluation harness
-└── output/                   # Generated application (git-ignored)
+  compiler/
+    ir/models.py
+    stages/
+      stage1_intent.py
+      stage2_domain.py
+      stage4_db.py
+      stage5_api.py
+      stage7_auth.py
+  validators/
+    consistency.py
+  repair_engine/
+    regenerator.py
+  runtime/
+    fastapi_gen/generator.py
+  frontend/
+    src/
+      api/
+      components/
+      App.tsx
+  output/
+    Generated FastAPI app
+  compiler_api.py
+  run_compiler_api.py
 ```
 
----
+## Setup
 
-## Key Design Decisions
+From `D:\ai-compiler`:
 
-| Decision | Choice | Reason |
-|---|---|---|
-| LLM | Claude Sonnet | Best JSON faithfulness, long context |
-| Temperature | 0.0 | Deterministic schema generation |
-| Generation style | Schema-constrained | Strict system prompt + JSON only |
-| Repair strategy | Surgical partial regen | Minimal cost, targeted context |
-| IR approach | Typed Pydantic models | Single source of truth for all layers |
-| Validation | 4-layer stack | Schema → Consistency → RBAC → Runtime |
+```powershell
+python -m venv venv
+.\venv\Scripts\activate
+pip install -r requirements.txt
+```
 
----
+Create `.env` from `.env.example` if needed:
 
-## Evaluation Results
+```powershell
+Copy-Item .env.example .env
+```
 
-| Metric | Target | Result |
-|---|---|---|
-| JSON validity rate | ≥ 95% | TBD after eval run |
-| Cross-layer consistency | ≥ 85% | TBD |
-| Repair success rate | ≥ 80% | TBD |
-| Avg latency | < 30s | TBD |
+Make sure Ollama is running and the local model is available:
 
-Run `python -m evaluation.runner` to populate results.
+```powershell
+ollama pull qwen2.5:3b
+```
 
----
+## Run the Backend API
 
-## Requirements
+Use the project launcher:
 
-- Python 3.11+
-- Anthropic API key
-- PostgreSQL 15+ (optional, for full runtime)
-- Docker (recommended)
+```powershell
+python run_compiler_api.py
+```
+
+The API runs at:
+
+```text
+http://localhost:8000
+```
+
+Health check:
+
+```powershell
+Invoke-WebRequest http://localhost:8000/health
+```
+
+Do not run this from the repo root while compiling:
+
+```powershell
+uvicorn compiler_api:app --reload --port 8000
+```
+
+The compiler writes generated files into `output/`. Uvicorn's default reload watcher can notice those generated files and restart the API server during a streaming compile response. `run_compiler_api.py` keeps reload enabled for source folders while excluding generated output.
+
+## Run the Frontend
+
+Open a second terminal:
+
+```powershell
+cd D:\ai-compiler\frontend
+npm install
+npm run dev
+```
+
+Open:
+
+```text
+http://localhost:5173
+```
+
+The frontend connects to `http://localhost:8000` by default. To use another backend URL, create `frontend/.env`:
+
+```text
+VITE_API_BASE_URL=http://localhost:8000
+```
+
+## API Contract
+
+### `GET /health`
+
+Returns backend readiness and model information.
+
+Example:
+
+```json
+{
+  "status": "ok",
+  "model": "qwen2.5:3b",
+  "ready": true
+}
+```
+
+### `POST /compile`
+
+Request:
+
+```json
+{
+  "prompt": "Build a CRM with login, contacts, dashboard, role-based access, and premium plan with payments. Admins can see analytics."
+}
+```
+
+Response type:
+
+```text
+text/event-stream
+```
+
+The backend streams events:
+
+```text
+stage_start
+stage_done
+stage_skip
+complete
+error
+```
+
+The frontend uses `fetch()` plus `ReadableStream` parsing because browser `EventSource` does not support POST bodies.
+
+## CLI Usage
+
+You can still run the compiler directly:
+
+```powershell
+python -m compiler.orchestrator "Build a CRM with login, contacts, dashboard, role-based access, and premium plan with payments. Admins can see analytics."
+```
+
+Generated runtime files are written to `output/`.
+
+## Run the Generated App
+
+After a successful compile:
+
+```powershell
+cd D:\ai-compiler\output
+pip install -r requirements.txt
+uvicorn main:app --reload
+```
+
+Generated API docs:
+
+```text
+http://localhost:8000/docs
+```
+
+## Frontend Features
+
+- Prompt editor
+- Backend/model health status
+- Stage-by-stage progress timeline
+- Live streamed compiler events
+- Intermediate JSON output per stage
+- Final blueprint viewer
+- Generated file viewer/export
+- Clean error display
+- Responsive layout
+
+## Notes
+
+- `output/` is generated and ignored by git.
+- `frontend/node_modules/` and `frontend/dist/` are ignored by git.
+- `.env` is ignored by git; `.env.example` is tracked.
+- The current frontend is intentionally a client for the existing compiler API. It does not redesign the compiler pipeline.
