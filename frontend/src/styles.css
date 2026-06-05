@@ -1,0 +1,571 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color: #171717;
+  background: #f6f5f2;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  color: #171717;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(246, 245, 242, 0.94)),
+    #f6f5f2;
+}
+
+button,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.shell {
+  width: min(1440px, 100%);
+  margin: 0 auto;
+  padding: 28px;
+}
+
+.app-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 22px;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  color: #5f625f;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+h1,
+h2 {
+  margin: 0;
+  letter-spacing: 0;
+}
+
+h1 {
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  line-height: 0.98;
+}
+
+h2 {
+  font-size: 1.35rem;
+}
+
+.status-pills,
+.prompt-actions,
+.stage-metrics,
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  padding: 7px 11px;
+  border: 1px solid #ddd7ca;
+  border-radius: 999px;
+  color: #434641;
+  background: rgba(255, 255, 255, 0.72);
+  font-size: 0.86rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.pill-ok {
+  border-color: #a8d8bd;
+  color: #17613b;
+  background: #e9f8ef;
+}
+
+.pill-error {
+  border-color: #f2b7a8;
+  color: #9b2c17;
+  background: #fff0ec;
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(320px, 420px) 1fr;
+  gap: 18px;
+  align-items: start;
+}
+
+.left-column,
+.right-column {
+  display: grid;
+  gap: 16px;
+}
+
+.prompt-panel,
+.progress-panel,
+.blueprint,
+.blueprint-empty,
+.error-panel {
+  border: 1px solid #ded8cb;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 14px 42px rgba(55, 48, 36, 0.08);
+}
+
+.prompt-panel {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+}
+
+.prompt-title,
+.error-heading,
+.blueprint-header,
+.stage-card-header {
+  display: flex;
+  align-items: center;
+}
+
+.prompt-title {
+  gap: 8px;
+  font-weight: 900;
+}
+
+textarea {
+  width: 100%;
+  min-height: 184px;
+  resize: vertical;
+  border: 1px solid #d8d1c2;
+  border-radius: 8px;
+  padding: 13px 14px;
+  outline: none;
+  color: #171717;
+  background: #fffdf8;
+  line-height: 1.5;
+}
+
+textarea:focus {
+  border-color: #2f8c66;
+  box-shadow: 0 0 0 4px rgba(47, 140, 102, 0.14);
+}
+
+.prompt-actions {
+  justify-content: space-between;
+}
+
+.primary-button,
+.secondary-button,
+.danger-button,
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 38px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 8px 13px;
+  font-weight: 850;
+}
+
+.primary-button {
+  color: #ffffff;
+  background: #1f7a57;
+}
+
+.primary-button:hover:not(:disabled) {
+  background: #176a49;
+}
+
+.secondary-button {
+  color: #242622;
+  border-color: #d8d1c2;
+  background: #fffdf8;
+}
+
+.secondary-button:hover:not(:disabled) {
+  background: #f3eee5;
+}
+
+.danger-button {
+  color: #ffffff;
+  background: #b6422b;
+}
+
+.progress-panel {
+  display: grid;
+  gap: 13px;
+  padding: 15px;
+}
+
+.progress-copy {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.progress-copy span {
+  color: #68655f;
+  font-size: 0.86rem;
+  font-weight: 750;
+}
+
+.progress-track {
+  height: 9px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e5dfd2;
+}
+
+.progress-track span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #2f8c66;
+  transition: width 220ms ease;
+}
+
+.timeline {
+  display: grid;
+  gap: 8px;
+}
+
+.timeline-item {
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  align-items: center;
+  gap: 8px;
+  color: #68655f;
+  font-size: 0.9rem;
+  font-weight: 760;
+}
+
+.timeline-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid #d8d1c2;
+  border-radius: 999px;
+  background: #fffdf8;
+}
+
+.timeline-running,
+.timeline-done {
+  color: #17613b;
+}
+
+.timeline-skipped {
+  color: #8a6426;
+}
+
+.timeline-error {
+  color: #9b2c17;
+}
+
+.stage-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.stage-card {
+  overflow: hidden;
+  border: 1px solid #ded8cb;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.stage-card-running {
+  border-color: #8cccad;
+}
+
+.stage-card-error {
+  border-color: #f2b7a8;
+}
+
+.stage-card-header {
+  width: 100%;
+  border: 0;
+  gap: 11px;
+  padding: 13px;
+  text-align: left;
+  background: transparent;
+}
+
+.stage-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  border-radius: 8px;
+  color: #1f7a57;
+  background: #e8f5ed;
+}
+
+.stage-heading {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+}
+
+.stage-kicker,
+.stage-time,
+.muted {
+  color: #6e6a61;
+  font-size: 0.82rem;
+}
+
+.stage-heading strong {
+  overflow-wrap: anywhere;
+}
+
+.stage-badge {
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 0.73rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.badge-idle {
+  color: #6e6a61;
+  background: #eee8dc;
+}
+
+.badge-running {
+  color: #17613b;
+  background: #def4e7;
+}
+
+.badge-done {
+  color: #17613b;
+  background: #e6f7ec;
+}
+
+.badge-skipped {
+  color: #8a6426;
+  background: #fff3d1;
+}
+
+.badge-error {
+  color: #9b2c17;
+  background: #fff0ec;
+}
+
+.chevron-open {
+  transform: rotate(180deg);
+}
+
+.stage-metrics {
+  padding: 0 13px 12px 58px;
+}
+
+.stage-metrics span {
+  border-radius: 999px;
+  padding: 4px 8px;
+  color: #3f423d;
+  background: #f0ece3;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.stage-body {
+  border-top: 1px solid #ece5d8;
+  padding: 12px;
+}
+
+.json-viewer {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #ded8cb;
+  border-radius: 8px;
+  background: #171717;
+}
+
+.json-viewer pre {
+  max-height: 520px;
+  margin: 0;
+  overflow: auto;
+  padding: 16px;
+  color: #f7f2e8;
+  font-family: theme("fontFamily.mono");
+  font-size: 0.82rem;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.json-viewer-compact pre {
+  max-height: 300px;
+  font-size: 0.78rem;
+}
+
+.icon-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  min-width: 32px;
+  min-height: 32px;
+  padding: 0;
+  color: #f7f2e8;
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.error-panel {
+  padding: 14px;
+  color: #8d2a16;
+  background: #fff2ee;
+  border-color: #efb9aa;
+}
+
+.error-heading {
+  gap: 8px;
+}
+
+.error-panel p {
+  margin: 8px 0 0;
+}
+
+.error-panel pre {
+  max-height: 190px;
+  overflow: auto;
+  margin: 12px 0 0;
+  padding: 10px;
+  border-radius: 8px;
+  color: #fff8f4;
+  background: #541b12;
+  white-space: pre-wrap;
+}
+
+.blueprint,
+.blueprint-empty {
+  margin-top: 18px;
+  padding: 16px;
+}
+
+.blueprint-empty {
+  display: grid;
+  place-items: center;
+  min-height: 230px;
+  color: #65625b;
+  text-align: center;
+}
+
+.blueprint-empty h2 {
+  color: #171717;
+}
+
+.blueprint-header {
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.tabs {
+  margin-bottom: 12px;
+}
+
+.tabs button {
+  min-height: 34px;
+  border: 1px solid #d8d1c2;
+  border-radius: 8px;
+  padding: 7px 10px;
+  color: #4d4f49;
+  background: #fffdf8;
+  font-weight: 850;
+}
+
+.tabs .tab-active {
+  color: #ffffff;
+  border-color: #1f7a57;
+  background: #1f7a57;
+}
+
+.spin {
+  animation: spin 0.85s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 960px) {
+  .shell {
+    padding: 18px;
+  }
+
+  .app-header,
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .app-header {
+    display: grid;
+  }
+
+  .status-pills {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 560px) {
+  .shell {
+    padding: 12px;
+  }
+
+  .stage-card-header {
+    grid-template-columns: 34px 1fr;
+  }
+
+  .stage-badge,
+  .stage-time {
+    margin-left: 45px;
+  }
+
+  .stage-metrics {
+    padding-left: 13px;
+  }
+
+  .blueprint-header,
+  .progress-copy {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .prompt-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+}
